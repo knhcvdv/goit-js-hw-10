@@ -1,5 +1,9 @@
 import axios from "axios";
+axios.defaults.headers.common["x-api-key"] = "live_Pqtw4PN8Wr6W2k8hbCUDY8kfhY5BsSYeQV1hmOpzxGYCsD77Up3gK1ECPRx2NxHg";
 import SlimSelect from 'slim-select'
+new SlimSelect({
+  select: '#selectElement'
+})
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import {fetchBreeds, fetchCatByBreed} from "./cat"
 
@@ -24,7 +28,7 @@ loaderEl.removeAttribute("hidden")
     fetchCatByBreed(event.target.value)
     .then(data =>   {
         const img = data.map(element => 
-        `<img src="${element.url}" alt="cat" width="" height="">`).join("")
+        `<img src="${element.url}" alt="cat" width="" height="200">`).join("")
         pictureEl.innerHTML = img
         data.map(element => {
             element.breeds.forEach(cat => {
