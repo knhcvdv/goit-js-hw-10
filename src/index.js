@@ -35,10 +35,10 @@ loaderEl.removeAttribute("hidden")
                 const array = [cat]
                 const findById = array.find(option => option.id === `${event.target.value}`)
                 const markup = `<div class="flex">
-                <h2>${findById.name}</h2>
-                <p>${findById.description}</p>
-                <h2>Temperament</h2>
-                <p>${findById.temperament}</p>
+                <h2 class="cat">${findById.name}</h2>
+                <p class="cat-text">${findById.description}</p>
+                <h2 class="cat">Temperament</h2>
+                <p class="cat-text">${findById.temperament}</p>
                 </div>`
                     pictureEl.insertAdjacentHTML("beforeend", markup)
             });
