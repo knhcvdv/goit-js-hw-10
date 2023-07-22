@@ -1,3 +1,5 @@
+import './css/style.css'
+
 import axios from "axios";
 axios.defaults.headers.common["x-api-key"] = "live_Pqtw4PN8Wr6W2k8hbCUDY8kfhY5BsSYeQV1hmOpzxGYCsD77Up3gK1ECPRx2NxHg";
 import SlimSelect from 'slim-select'
@@ -6,49 +8,71 @@ new SlimSelect({
 })
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import {fetchBreeds, fetchCatByBreed} from "./cat"
+import SlimSelect from 'slim-select';
+import {
+  hideCatInfo,
+  hideLoader,
+  showCatInfo,
+  showLoader,
+} from './additional';
 
+const breedSelect = document.querySelector('.breed-select');
+const loader = document.querySelector('.loader');
+const catInfo = document.querySelector('.cat-info');
 
-const selectEl = document.querySelector(".breed-select");
-const loaderEl = document.querySelector(".loader");
-const errorEl = document.querySelector(".error");
-const pictureEl = document.querySelector(".cat-info");
+catInfo.addEventListener('input', () => {
+  if (catInfo.value.trim()) {
+    catInfo.style.opacity = 1;
+  } else {
+    catInfo.style.opacity = 0;
+  }
+});
+
+loader.style.display = 'none';
 
 fetchBreeds()
-.then(data => {
-    console.log(data);
-    selectEl.innerHTML = data.map(Element => `<option value="${Element.id}">${Element.name}</option>`).join("")
-})
-.catch(() => errorEl.removeAttribute("hidden"))
-.finally(() => loaderEl.setAttribute("hidden", true))
+  .then(breeds => {
+    breeds.forEach(breed => {
+      const option = document.createElement('option');
+      option.value = breed.id;
+      option.textContent = breed.name;
+      breedSelect.appendChild(option);
+    });
+  })
+  .then(() => {
+    new SlimSelect({
+      select: '#selectElement',
+    });
+  })
+  .catch(error => Notify.Notify.failure(error));
 
-selectEl.addEventListener("change", onChange)   
+breedSelect.addEventListener('change', makeCatByBreed);
 
-function onChange(event){
-loaderEl.removeAttribute("hidden")
-    fetchCatByBreed(event.target.value)
-    .then(data =>   {
-        const img = data.map(element => 
-        `<img src="${element.url}" alt="cat" width="" height="200">`).join("")
-        pictureEl.innerHTML = img
-        data.map(element => {
-            element.breeds.forEach(cat => {
-                const array = [cat]
-                const findById = array.find(option => option.id === `${event.target.value}`)
-                const markup = `<div class="flex">
-                <h2 class="cat">${findById.name}</h2>
-                <p class="cat-text">${findById.description}</p>
-                <h2 class="cat">Temperament</h2>
-                <p class="cat-text">${findById.temperament}</p>
-                </div>`
-                    pictureEl.insertAdjacentHTML("beforeend", markup)
-            });
-        })
+function makeCatByBreed() {
+  const breedId = breedSelect.value;
+
+  showLoader();
+  hideCatInfo();
+  fetchCatByBreed(breedId)
+    .then(catData => {
+      hideLoader();
+      showCatInfo();
+      const catName = catData[0].breeds[0].name;
+      const imgUrl = catData[0].url;
+      const catDescr = catData[0].breeds[0].description;
+      const catTemp = catData[0].breeds[0].temperament;
+
+      const markUp = `
+    
+    <img src="${imgUrl}" alt="${catName} width="250" height="250" class="cat-img" loading="lazy">
+    
+    <div class="cat-data">
+    <h2 class="cat-name">${catName}</h2>
+    <p class="cat-text">${catDescr}</p>>
+    <p class="cat-temperament">Temperament:${catTemp}</p>
+    </div> `;
+
+      catInfo.innerHTML = markUp;
     })
-    .catch(() =>  {
-        errorEl.removeAttribute("hidden")
-        Notify.failure('Oops, there is no country with that name');
-    })
-    .finally(() => 
-    loaderEl.setAttribute("hidden", true)
-    )
+    .catch(error => Notify.Notify.failure(error));
 }
