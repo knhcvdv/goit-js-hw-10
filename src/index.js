@@ -29,6 +29,25 @@ catInfo.addEventListener('input', () => {
 });
 
 loader.style.display = 'none';
+loader.style.display = 'block';
+breedSelect.style.display = 'none';
+
+fetchBreeds()
+  .then(breeds => {
+    breeds.forEach(breed => {
+      const option = document.createElement('option');
+      option.value = breed.id;
+      option.textContent = breed.name;
+      breedSelect.appendChild(option);
+    });
+
+    breedSelect.style.display = 'block';
+    loader.style.display = 'none';
+  })
+  .catch(error => Notify.Notify.failure(error));
+
+breedSelect.addEventListener('change', makeCatByBreed);
+
 
 fetchBreeds()
   .then(breeds => {
