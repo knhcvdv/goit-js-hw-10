@@ -91,7 +91,11 @@ function makeCatByBreed() {
     <p class="cat-temperament">Temperament:${catTemp}</p>
     </div> `;
 
-      catInfo.innerHTML = markUp;
-    })
-    .catch(error => Notify.Notify.failure(error));
+    catInfo.innerHTML = markUp;
+  })
+  .catch(error => {
+    // Remove the previous markup if there is an error.
+    catInfo.innerHTML = previousMarkup;
+    Notify.Notify.failure(error);
+  });
 }
