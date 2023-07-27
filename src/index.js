@@ -94,7 +94,6 @@ function makeCatByBreed() {
     catInfo.innerHTML = markUp;
   })
   .catch(error => {
-    // Remove the previous markup if there is an error.
     catInfo.innerHTML = '';
     Notify.Notify.failure(error);
   });

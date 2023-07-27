@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Notify from 'notiflix';
 
-// функція для забору порід
 
 export function fetchBreeds() {
   const loader = document.querySelector('.loader');
@@ -15,7 +14,6 @@ export function fetchBreeds() {
     });
 }
 
-//  функція для забору породи по ід
 
 export function fetchCatByBreed(breedId) {
   return axios
@@ -26,16 +24,12 @@ export function fetchCatByBreed(breedId) {
     });
 }
 
-// код, який запускається, коли сторінка завантажується
 
 window.onload = () => {
-  // Fetch the breeds
   fetchBreeds().then(breeds => {
-    // Hide the loader
     const loader = document.querySelector('.loader');
     loader.style.display = 'none';
 
-    // Add the breeds to the select
     const select = document.querySelector('.breed-select');
     breeds.forEach(breed => {
       const option = document.createElement('option');
